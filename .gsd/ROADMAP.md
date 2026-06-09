@@ -16,3 +16,8 @@
 ## Phase 4: Compilation & Verification
 - [x] Typecheck/build the project to verify compilation (`npm run build` or typecheck compiler).
 - [x] Launch `npm start`, test selecting the NVIDIA provider and one of the models, and verify it prompts for the key or runs successfully.
+
+## Phase 5: Parallel Model Comparison Tool
+- [x] Create a parallel comparison utility in `scripts/compare-models.ts`.
+- [x] Test models against live NVIDIA API and correct the active model IDs registry.
+- [x] Run parallel prompt execution successfully and output detailed markdown reports.
