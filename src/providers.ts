@@ -40,7 +40,7 @@ export const PROVIDERS: ProviderDef[] = [
     displayName: 'Google',
     modelPrefix: 'gemini-',
     apiKeyEnvVar: 'GOOGLE_API_KEY',
-    fastModel: 'gemini-3-flash-preview',
+    fastModel: 'gemini-3.5-flash',
     contextWindow: 1_000_000,
   },
   {
@@ -85,11 +85,13 @@ export const PROVIDERS: ProviderDef[] = [
 
 const defaultProvider = PROVIDERS.find((p) => p.id === 'openai')!;
 
-/**
- * Resolve the provider for a given model name based on its prefix.
- * Falls back to OpenAI when no prefix matches.
- */
 export function resolveProvider(modelName: string): ProviderDef {
+  if (modelName.startsWith('moonshotai/') || modelName.startsWith('kimi-')) {
+    return PROVIDERS.find((p) => p.id === 'moonshot')!;
+  }
+  if (modelName.startsWith('deepseek-') || modelName.startsWith('deepseek-ai/')) {
+    return PROVIDERS.find((p) => p.id === 'deepseek')!;
+  }
   return (
     PROVIDERS.find((p) => p.modelPrefix && modelName.startsWith(p.modelPrefix)) ??
     defaultProvider

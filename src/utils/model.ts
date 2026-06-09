@@ -15,23 +15,30 @@ const PROVIDER_MODELS: Record<string, Model[]> = {
   openai: [
     { id: 'gpt-5.5', displayName: 'GPT 5.5' },
     { id: 'gpt-5.4', displayName: 'GPT 5.4' },
+    { id: 'openai/gpt-oss-120b', displayName: 'GPT OSS 120B (Nvidia)' },
   ],
   anthropic: [
     { id: 'claude-sonnet-4-6', displayName: 'Sonnet 4.6' },
     { id: 'claude-opus-4-8', displayName: 'Opus 4.8' },
   ],
   google: [
-    { id: 'gemini-3-flash-preview', displayName: 'Gemini 3 Flash' },
-    { id: 'gemini-3.1-pro-preview', displayName: 'Gemini 3.1 Pro' },
+    { id: 'gemini-3.5-flash', displayName: 'Gemini 3.5 Flash' },
+    { id: 'gemini-3.1-pro', displayName: 'Gemini 3.1 Pro' },
+    { id: 'gemini-3-flash-preview', displayName: 'Gemini 3.1 Flash Preview' },
+    { id: 'gemini-3.1-pro-preview', displayName: 'Gemini 3.1 Pro Preview' },
   ],
   xai: [
     { id: 'grok-4-0709', displayName: 'Grok 4' },
     { id: 'grok-4-1-fast-reasoning', displayName: 'Grok 4.1 Fast Reasoning' },
   ],
-  moonshot: [{ id: 'kimi-k2-5', displayName: 'Kimi K2.5' }],
+  moonshot: [
+    { id: 'kimi-k2-5', displayName: 'Kimi K2.5' },
+    { id: 'moonshotai/kimi-k2.6', displayName: 'Kimi K2.6 (Nvidia)' },
+  ],
   deepseek: [
     { id: 'deepseek-v4-pro', displayName: 'DeepSeek V4 Pro' },
     { id: 'deepseek-v4-flash', displayName: 'DeepSeek V4 Flash' },
+    { id: 'deepseek-ai/deepseek-v4-flash', displayName: 'DeepSeek V4 Flash (Nvidia)' },
   ],
 };
 

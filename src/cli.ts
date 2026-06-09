@@ -343,7 +343,7 @@ export async function runCli() {
 
   const HELP_TEXT = `Keyboard Shortcuts
   esc          Interrupt query / clear input
-  ctrl+c       Exit Dexter
+  ctrl+c       Exit FinAI
   /model       Switch LLM provider and model
   /search      Choose preferred web search provider
   /rules       Show research rules
@@ -660,7 +660,7 @@ export async function runCli() {
       );
       showScreenView(
         'Select web search provider',
-        'Dexter tries your preferred provider first and falls back to the others.',
+        'FinAI tries your preferred provider first and falls back to the others.',
         selector,
         'Enter to confirm · esc to exit',
         selector,

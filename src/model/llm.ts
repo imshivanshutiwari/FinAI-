@@ -96,27 +96,32 @@ const MODEL_FACTORIES: Record<string, ModelFactory> = {
         baseURL: 'https://openrouter.ai/api/v1',
       },
     }),
-  moonshot: (name, opts) =>
-    new ChatOpenAI({
+  moonshot: (name, opts) => {
+    const apiKey = getApiKey('MOONSHOT_API_KEY');
+    const isNvidia = apiKey.startsWith('nvapi-');
+    return new ChatOpenAI({
       model: name,
       ...opts,
-      apiKey: getApiKey('MOONSHOT_API_KEY'),
+      apiKey,
       configuration: {
-        baseURL: 'https://api.moonshot.cn/v1',
+        baseURL: isNvidia ? 'https://integrate.api.nvidia.com/v1' : 'https://api.moonshot.cn/v1',
       },
-    }),
+    });
+  },
   deepseek: (name, opts) => {
+    const apiKey = getApiKey('DEEPSEEK_API_KEY');
+    const isNvidia = apiKey.startsWith('nvapi-');
     // Both deepseek-v4-pro and deepseek-v4-flash support thinking mode.
     // temperature/top_p/presence_penalty/frequency_penalty are ignored in thinking mode.
     const isThinkingModel = name === 'deepseek-v4-pro' || name === 'deepseek-v4-flash';
     return new ChatOpenAI({
       model: name,
       ...opts,
-      apiKey: getApiKey('DEEPSEEK_API_KEY'),
+      apiKey,
       configuration: {
-        baseURL: 'https://api.deepseek.com',
+        baseURL: isNvidia ? 'https://integrate.api.nvidia.com/v1' : 'https://api.deepseek.com',
       },
-      ...(isThinkingModel && {
+      ...(isThinkingModel && !isNvidia && {
         // reasoning_effort is a top-level param; thinking toggle goes in extra_body
         // per DeepSeek V4 API docs (OpenAI SDK compat layer)
         reasoning_effort: 'high',
@@ -134,12 +139,20 @@ const MODEL_FACTORIES: Record<string, ModelFactory> = {
     }),
 };
 
-const DEFAULT_FACTORY: ModelFactory = (name, opts) =>
-  new ChatOpenAI({
+const DEFAULT_FACTORY: ModelFactory = (name, opts) => {
+  const apiKey = getApiKey('OPENAI_API_KEY');
+  const isNvidia = apiKey.startsWith('nvapi-');
+  return new ChatOpenAI({
     model: name,
     ...opts,
-    apiKey: getApiKey('OPENAI_API_KEY'),
+    apiKey,
+    ...(isNvidia && {
+      configuration: {
+        baseURL: 'https://integrate.api.nvidia.com/v1',
+      },
+    }),
   });
+};
 
 export function getChatModel(
   modelName: string = DEFAULT_MODEL,

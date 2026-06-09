@@ -18,6 +18,7 @@ import { AgentToolExecutor } from './tool-executor.js';
 import { MemoryManager } from '../memory/index.js';
 import { runMemoryFlush, shouldRunMemoryFlush } from '../memory/flush.js';
 import { resolveProvider } from '../providers.js';
+import { evaluatePlans, isComplexQuery } from './plan-evaluator.js';
 
 
 const DEFAULT_MODEL = 'gpt-5.5';
@@ -132,6 +133,35 @@ export class Agent {
       ...historyMessages,
       new HumanMessage(query),
     ];
+
+    // ─── Tree of Thoughts: Plan Evaluation ────────────────────────────
+    // For complex queries, generate multiple candidate strategies, score
+    // them, and inject the optimal plan as strategic guidance.
+    if (isComplexQuery(query)) {
+      yield { type: 'thinking', message: 'Evaluating research strategies...' };
+      try {
+        const planResult = await evaluatePlans({
+          query,
+          model: this.model,
+          signal: this.signal,
+        });
+        if (!planResult.skipped && planResult.bestPlan) {
+          const plan = planResult.bestPlan;
+          const planGuidance = [
+            `[STRATEGIC PLAN — Score: ${plan.score}/10]`,
+            `Strategy: ${plan.title}`,
+            `Steps:\n${plan.steps.map((s, i) => `  ${i + 1}. ${s}`).join('\n')}`,
+            `Recommended tools: ${plan.toolSequence.join(' → ')}`,
+            '',
+            'Follow this plan. You may adapt it if you discover new information.',
+          ].join('\n');
+          messages.push(new HumanMessage(planGuidance));
+          yield { type: 'thinking', message: `Strategy selected: "${plan.title}" (${plan.score}/10)` };
+        }
+      } catch {
+        // Plan evaluation failure is non-fatal — proceed with direct execution
+      }
+    }
 
     // Main agent loop
     let overflowRetries = 0;
@@ -444,10 +474,57 @@ export class Agent {
     responseText: string,
     ctx: RunContext,
   ): AsyncGenerator<AgentEvent, void> {
+    let finalAnswer = responseText;
+
+    // ─── Critic Validation Pass ──────────────────────────────────────
+    // For substantive answers (>500 chars), optionally spawn a critic
+    // subagent to review the response for errors and hallucinations.
+    const isSubstantive = responseText.length > 500 && ctx.iteration > 2;
+    if (isSubstantive) {
+      try {
+        yield { type: 'thinking', message: 'Running critic validation...' };
+        const { Agent: AgentClass } = await import('./agent.js');
+        const critic = await AgentClass.create({
+          model: this.model,
+          maxIterations: 5,
+          signal: this.signal,
+          memoryEnabled: false,
+          toolAllowlist: ['web_search', 'get_financials', 'get_market_data', 'memory_search'],
+          systemPromptOverride: [
+            'You are a CRITIC — a rigorous peer reviewer of financial analysis.',
+            'Review the following draft answer for:',
+            '1. Factual errors or implausible claims',
+            '2. Logical inconsistencies',
+            '3. Missing important context',
+            '4. One-sided bias without acknowledging risks',
+            '',
+            'If the analysis is solid, respond with: "VERDICT: PASS" and a brief explanation.',
+            'If it needs revision, respond with: "VERDICT: REVISE" and list specific corrections.',
+            'Keep your review concise (under 200 words).',
+          ].join('\n'),
+          agentLabel: 'critic',
+        });
+
+        let criticFeedback = '';
+        for await (const ev of critic.run(`Review this analysis:\n\n${responseText}`)) {
+          if (ev.type === 'done') {
+            criticFeedback = ev.answer;
+          }
+        }
+
+        // If critic found issues, append the feedback as a note
+        if (criticFeedback && criticFeedback.includes('REVISE')) {
+          finalAnswer += `\n\n---\n_Critic review: ${criticFeedback}_`;
+        }
+      } catch {
+        // Critic failure is non-fatal — deliver the original answer
+      }
+    }
+
     const totalTime = Date.now() - ctx.startTime;
     yield {
       type: 'done',
-      answer: responseText,
+      answer: finalAnswer,
       toolCalls: ctx.scratchpad.getToolCallRecords(),
       iterations: ctx.iteration,
       totalTime,

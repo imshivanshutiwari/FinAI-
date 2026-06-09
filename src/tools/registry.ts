@@ -19,6 +19,8 @@ import { cronTool, CRON_TOOL_DESCRIPTION } from './cron/cron-tool.js';
 import { memoryGetTool, MEMORY_GET_DESCRIPTION, memorySearchTool, MEMORY_SEARCH_DESCRIPTION, memoryUpdateTool, MEMORY_UPDATE_DESCRIPTION } from './memory/index.js';
 import { discoverSkills } from '../skills/index.js';
 import { createSpawnSubagent, SPAWN_SUBAGENT_DESCRIPTION } from './subagent/spawn-subagent.js';
+import { codeExecuteTool, CODE_EXECUTE_DESCRIPTION } from './code-executor/code-executor.js';
+import { createAnalyzeImage, ANALYZE_IMAGE_DESCRIPTION } from './vision/analyze-image.js';
 
 /**
  * A registered tool with its rich description for system prompt injection.
@@ -149,6 +151,20 @@ export function getToolRegistry(model: string): RegisteredTool[] {
       description: MEMORY_UPDATE_DESCRIPTION,
       compactDescription: 'Add, edit, or delete persistent memory entries.',
       concurrencySafe: false,
+    },
+    {
+      name: 'code_execute',
+      tool: codeExecuteTool,
+      description: CODE_EXECUTE_DESCRIPTION,
+      compactDescription: 'Execute Python or JavaScript code in a sandboxed subprocess for precise calculations.',
+      concurrencySafe: true,
+    },
+    {
+      name: 'analyze_image',
+      tool: createAnalyzeImage(model),
+      description: ANALYZE_IMAGE_DESCRIPTION,
+      compactDescription: 'Analyze an image (chart, table, screenshot) using a vision-capable AI model.',
+      concurrencySafe: true,
     },
   ];
 

@@ -42,6 +42,8 @@ const READ_ONLY_TOOLS = [
   'read_file',
   'memory_search',
   'memory_get',
+  'code_execute',
+  'analyze_image',
 ];
 
 const WORKER_PREAMBLE =
@@ -70,6 +72,12 @@ export const SUBAGENT_TYPES: Record<string, SubagentTypeConfig> = {
     systemPrompt: `${WORKER_PREAMBLE}\n\nYou are a financial analysis worker. Pull the relevant financials, metrics, and market data, then deliver a focused quantitative analysis with the numbers that support it.`,
     tools: ['get_financials', 'get_market_data', 'stock_screener', 'read_filings'],
     maxIterations: 8,
+  },
+  critic: {
+    whenToUse: 'Review and validate a draft analysis for errors, unsupported claims, and logical flaws before presenting it to the user.',
+    systemPrompt: `${WORKER_PREAMBLE}\n\nYou are a CRITIC — a rigorous peer reviewer of financial analysis. You will receive a draft answer from the orchestrator. Your job:\n\n1. **Fact-check**: Are all numerical claims plausible? Are there obvious errors in calculations?\n2. **Logic check**: Does the reasoning flow logically? Are conclusions supported by the evidence presented?\n3. **Completeness**: Are there important aspects the analysis missed?\n4. **Bias detection**: Is the analysis one-sided? Does it acknowledge risks and counterarguments?\n5. **Hallucination check**: Does the analysis claim facts that seem fabricated or unverifiable?\n\nFor each issue found, explain:\n- WHAT is wrong\n- WHY it matters\n- HOW to fix it\n\nIf the analysis is solid, say so clearly and explain why.\n\nEnd with a verdict: PASS (ready to present), REVISE (needs changes), or FAIL (fundamentally flawed).`,
+    tools: ['web_search', 'get_financials', 'get_market_data', 'memory_search'],
+    maxIterations: 5,
   },
 };
 
