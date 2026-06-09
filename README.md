@@ -40,7 +40,7 @@ FinAI takes complex financial questions and turns them into clear, step-by-step 
 - **Real-Time Financial Data**: Access to income statements, balance sheets, and cash flow statements
 - **Safety Features**: Built-in loop detection and step limits to prevent runaway execution
 
-[![Twitter Follow](https://img.shields.io/twitter/follow/virattt?style=social)](https://twitter.com/virattt) [![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=social&logo=discord)](https://discord.gg/jpGHv2XB6T)
+
 
 <img width="1042" height="638" alt="FinAI Architecture" src="assets/finai_architecture.png" />
 
@@ -75,8 +75,8 @@ bun --version
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/virattt/finai.git
-cd finai
+git clone https://github.com/imshivanshutiwari/FinAI-.git
+cd FinAI-
 ```
 
 2. Install dependencies with Bun:
