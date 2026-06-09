@@ -1,15 +1,16 @@
-# STATE: Rebranding to FinAI
+# STATE: Integrating NVIDIA NIM Provider
 
 ## Current Milestone
-- Objective: Rebrand Dexter to FinAI
-- Roadmap Position: Completed
+- Objective: Integrate NVIDIA NIM model provider and its main models.
+- Roadmap Position: Milestone Completed
 
 ## Active Task
-- Task: Rebranding complete and verified
+- Task: All tasks complete. System verified.
 
 ## Completed Tasks
-- [x] SPEC.md finalized
+- [x] SPEC.md proposed
 - [x] ROADMAP.md created
-- [x] Phase 1 complete: package.json and paths.ts updated with seamless .dexter -> .finai migration
-- [x] Phase 2 complete: CLI interface, ASCII banner, prompts updated
-- [x] Phase 3 complete: Documentation (README.md, SOUL.md, AGENTS.md) rebranded and verified clean typecheck compilation
+- [x] Phase 1: Model Registry & Metadata completed
+- [x] Phase 2: LLM Factory & Integration completed
+- [x] Phase 3: Environment Configuration completed
+- [x] Phase 4: Compilation & Verification completed

@@ -1,21 +1,41 @@
-# SPEC: Project Rebranding to FinAI
+# SPEC: Integrating NVIDIA NIM Provider
 
 **Status: FINALIZED**
 
 ## Objective
-Rebrand the "Dexter" financial research agent codebase to "FinAI" across all user-facing names, package names, configuration directories, ASCII logos, and documentation.
+Integrate the NVIDIA NIM API (build.nvidia.com) as a first-class model provider in FinAI, allowing the user to select and run financial research queries using NVIDIA-hosted models.
 
 ## Requirements
-1. **Package Configuration**: Update `package.json` to rename the project to `finai` (cli name: `finai`).
-2. **Settings and Caching Directory**: Change the configuration directory from `.dexter` to `.finai` in path utilities (`src/utils/paths.ts`) and migration helpers.
-3. **CLI Brand Elements**:
-   - Update `src/components/intro.ts` to show "FinAI" instead of "Dexter".
-   - Generate and replace the ASCII banner logo with "FinAI".
-   - Update descriptions and display names.
-4. **Documentation**: Rename "Dexter" to "FinAI" in all documentation (`README.md`, `SOUL.md`, `AGENTS.md`).
-5. **Code References**: Rename internal code instances of "dexter" (variables, comments, prompts) where appropriate, ensuring backward compatibility for existing settings.
+1. **Provider Definition**:
+   - Add a new provider entry for `nvidia` in `src/providers.ts`.
+   - Display name: `NVIDIA`.
+   - API Key environment variable: `NVIDIA_API_KEY`.
+   - Default context window: `128,000` tokens.
+   - Fast model variant: `meta/llama-3.1-8b-instruct`.
+   - Model prefix: `nvidia:`.
 
-## Constraints
-- Do not break existing API credentials or command-line execution.
-- Maintain existing settings file compatibility (migrate from `.dexter/settings.json` to `.finai/settings.json` if possible, or support the new path smoothly).
-- Ensure all tool registry references are unchanged unless they specifically expose the old brand name to the LLM.
+2. **Model Registry**:
+   - Add a comprehensive list of NVIDIA NIM models in `PROVIDER_MODELS` in `src/utils/model.ts`.
+   - The list should include:
+     - **Qwen**: `qwen/qwen3.5-397b-a17b`, `qwen/qwen2.5-72b-instruct`
+     - **Meta Llama**: `meta/llama-3.1-405b-instruct`, `meta/llama-3.1-70b-instruct`, `meta/llama-3.1-8b-instruct`, `meta/llama-3.3-70b-instruct`
+     - **Mistral**: `mistralai/mistral-large-2-instruct`, `mistralai/mixtral-8x22b-instruct-v0.1`
+     - **Microsoft**: `microsoft/phi-3-medium-128k-instruct`
+     - **Google**: `google/gemma-2-27b-it`, `google/gemma-2-9b-it`
+     - **DeepSeek**: `deepseek-ai/deepseek-r1`, `deepseek-ai/deepseek-v3`
+     - **NVIDIA**: `nvidia/llama-3.1-nemotron-70b-instruct`, `nvidia/nemotron-4-340b-instruct`
+
+3. **LLM Factory & Routing**:
+   - Add a factory for the `nvidia` provider in `MODEL_FACTORIES` in `src/model/llm.ts`.
+   - Base URL for the NVIDIA endpoint: `https://integrate.api.nvidia.com/v1`.
+   - The factory should extract `NVIDIA_API_KEY` from the environment.
+   - Ensure `resolveProvider` routes models starting with `nvidia:` to the `nvidia` provider definition.
+
+4. **Environment & UI Configuration**:
+   - Update `src/utils/env.ts` to support checking, saving, and getting display names for `NVIDIA_API_KEY`.
+   - Update `env.example` to document `NVIDIA_API_KEY`.
+   - Add `NVIDIA_API_KEY` to local `.env`.
+
+## Verification Plan
+1. Compile and typecheck the codebase (`npm run build` or typecheck compiler).
+2. Start the interactive CLI, select the `NVIDIA` provider, choose `qwen/qwen3.5-397b-a17b`, and run a test query to verify integration works.

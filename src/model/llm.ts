@@ -131,6 +131,15 @@ const MODEL_FACTORIES: Record<string, ModelFactory> = {
       }),
     });
   },
+  nvidia: (name, opts) =>
+    new ChatOpenAI({
+      model: name.replace(/^nvidia:/, ''),
+      ...opts,
+      apiKey: getApiKey('NVIDIA_API_KEY'),
+      configuration: {
+        baseURL: 'https://integrate.api.nvidia.com/v1',
+      },
+    }),
   ollama: (name, opts) =>
     new ChatOllama({
       model: name.replace(/^ollama:/, ''),

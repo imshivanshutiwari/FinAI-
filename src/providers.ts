@@ -76,6 +76,14 @@ export const PROVIDERS: ProviderDef[] = [
     contextWindow: 128_000,
   },
   {
+    id: 'nvidia',
+    displayName: 'NVIDIA',
+    modelPrefix: 'nvidia:',
+    apiKeyEnvVar: 'NVIDIA_API_KEY',
+    fastModel: 'nvidia:meta/llama-3.1-8b-instruct',
+    contextWindow: 128_000,
+  },
+  {
     id: 'ollama',
     displayName: 'Ollama',
     modelPrefix: 'ollama:',

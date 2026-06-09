@@ -1,15 +1,18 @@
-# ROADMAP: Project Rebranding to FinAI
+# ROADMAP: Integrating NVIDIA NIM Provider
 
-## Phase 1: Configuration & Workspace
-- [x] Update `package.json` metadata (name, description, main bin script name).
-- [x] Rename `.dexter` references to `.finai` in `src/utils/paths.ts`.
-- [x] Implement seamless settings migration (if `.dexter` exists and `.finai` does not, copy settings over).
+## Phase 1: Model Registry & Metadata
+- [x] Add `nvidia` provider definition in `src/providers.ts`.
+- [x] List all the 14 proposed models under `nvidia` provider in `src/utils/model.ts`.
+- [x] Update `getModelDisplayName` in `src/utils/model.ts` to normalize the `nvidia:` prefix.
 
-## Phase 2: CLI Interface & Prompts
-- [x] Design and implement new ASCII banner logo for "FinAI" in `src/components/intro.ts`.
-- [x] Update display messages, greeting text, and help descriptions in CLI files.
-- [x] Review and update agent system prompts where the agent identifies as "Dexter" (`src/agent/prompts.ts`).
+## Phase 2: LLM Factory & Integration
+- [x] Add `nvidia` entry in `MODEL_FACTORIES` in `src/model/llm.ts`.
+- [x] Set `baseURL` to `https://integrate.api.nvidia.com/v1` and use `NVIDIA_API_KEY`.
+- [x] Ensure `nvidia:` prefix is stripped before sending the model name to the API.
 
-## Phase 3: Documentation & Verification
-- [x] Rebrand `README.md`, `SOUL.md`, and `AGENTS.md` by replacing "Dexter" with "FinAI".
-- [x] Verify clean compilation and successful local execution under the new project name.
+## Phase 3: Environment Configuration
+- [x] Add `NVIDIA_API_KEY` to `env.example`.
+
+## Phase 4: Compilation & Verification
+- [x] Typecheck/build the project to verify compilation (`npm run build` or typecheck compiler).
+- [x] Launch `npm start`, test selecting the NVIDIA provider and one of the models, and verify it prompts for the key or runs successfully.

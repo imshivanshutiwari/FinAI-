@@ -40,6 +40,23 @@ const PROVIDER_MODELS: Record<string, Model[]> = {
     { id: 'deepseek-v4-flash', displayName: 'DeepSeek V4 Flash' },
     { id: 'deepseek-ai/deepseek-v4-flash', displayName: 'DeepSeek V4 Flash (Nvidia)' },
   ],
+  nvidia: [
+    { id: 'nvidia:qwen/qwen3.5-397b-a17b', displayName: 'Qwen 3.5 397B' },
+    { id: 'nvidia:qwen/qwen2.5-72b-instruct', displayName: 'Qwen 2.5 72B Instruct' },
+    { id: 'nvidia:meta/llama-3.1-405b-instruct', displayName: 'Llama 3.1 405B Instruct' },
+    { id: 'nvidia:meta/llama-3.1-70b-instruct', displayName: 'Llama 3.1 70B Instruct' },
+    { id: 'nvidia:meta/llama-3.1-8b-instruct', displayName: 'Llama 3.1 8B Instruct' },
+    { id: 'nvidia:meta/llama-3.3-70b-instruct', displayName: 'Llama 3.3 70B Instruct' },
+    { id: 'nvidia:mistralai/mistral-large-2-instruct', displayName: 'Mistral Large 2 Instruct' },
+    { id: 'nvidia:mistralai/mixtral-8x22b-instruct-v0.1', displayName: 'Mixtral 8x22B Instruct' },
+    { id: 'nvidia:microsoft/phi-3-medium-128k-instruct', displayName: 'Phi-3 Medium Instruct' },
+    { id: 'nvidia:google/gemma-2-27b-it', displayName: 'Gemma 2 27B IT' },
+    { id: 'nvidia:google/gemma-2-9b-it', displayName: 'Gemma 2 9B IT' },
+    { id: 'nvidia:deepseek-ai/deepseek-r1', displayName: 'DeepSeek R1' },
+    { id: 'nvidia:deepseek-ai/deepseek-v3', displayName: 'DeepSeek V3' },
+    { id: 'nvidia:nvidia/llama-3.1-nemotron-70b-instruct', displayName: 'Llama 3.1 Nemotron 70B Instruct' },
+    { id: 'nvidia:nvidia/nemotron-4-340b-instruct', displayName: 'Nemotron-4 340B Instruct' },
+  ],
 };
 
 export const PROVIDERS: Provider[] = PROVIDER_DEFS.map((provider) => ({
@@ -63,7 +80,7 @@ export function getDefaultModelForProvider(providerId: string): string | undefin
 }
 
 export function getModelDisplayName(modelId: string): string {
-  const normalizedId = modelId.replace(/^(ollama|openrouter):/, '');
+  const normalizedId = modelId.replace(/^(ollama|openrouter|nvidia):/, '');
 
   for (const provider of PROVIDERS) {
     const model = provider.models.find((entry) => entry.id === normalizedId || entry.id === modelId);
