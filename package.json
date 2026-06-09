@@ -1,11 +1,11 @@
 {
-  "name": "dexter-ts",
+  "name": "finai",
   "version": "2026.6.3",
-  "description": "Dexter - AI agent for deep financial research.",
+  "description": "FinAI - AI agent for deep financial research.",
   "type": "module",
   "main": "src/index.tsx",
   "bin": {
-    "dexter-ts": "./src/index.tsx"
+    "finai": "./src/index.tsx"
   },
   "scripts": {
     "start": "bun run src/index.tsx",
